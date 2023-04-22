@@ -86,7 +86,7 @@ public class HardwareMonitor
         Console.WriteLine(gpumemused);
         Console.WriteLine(gpumemused / gpumemtotal);
         sensor["GpuMem"] = (gpumemused / gpumemtotal) * 100;
-
+        
         return sensor;
     }
     ~HardwareMonitor()

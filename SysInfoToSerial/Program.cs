@@ -13,7 +13,7 @@ namespace SysInfoToSerial
             SysInfoToSerial program = new SysInfoToSerial();
             UI uI = new UI();
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
-            //new WebSocketServer().RunServerAsync("http://localhost:8080/").Wait();
+            
             while (true)
             {
                 program.Run(uI.running);

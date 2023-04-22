@@ -19,18 +19,24 @@ namespace SysInfoToSerial
         private byte[] byteArr = new byte[7];
         private HardwareMonitor Monitor = new HardwareMonitor();
         private IDictionary<string, float> sensors;
+        private WebSocketServer webserv;
+
+
+
 
         public SysInfoToSerial()
         {
             Monitor.Print();
-            serial = new SerialCom("COM4");
+            serial = new SerialCom("COM4");         
+            webserv = new WebSocketServer();
+            webserv.RunServerAsync("http://localhost:8080/").Wait();
         }
         public void Run(bool state)
         {
             serial.Pause(state);
             if (state)
-            {              
-
+            {
+                webserv.Message = sensors.ToString();
                 sensors = Monitor.GetData();
 
                 Console.WriteLine($"CPU Used {sensors["Cpu%"]}");

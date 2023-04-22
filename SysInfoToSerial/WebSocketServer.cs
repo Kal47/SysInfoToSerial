@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 class WebSocketServer
 {
     private readonly ConcurrentDictionary<Guid, WebSocket> _webSockets = new ConcurrentDictionary<Guid, WebSocket>();
+    public String Message;
 
     public async Task RunServerAsync(string uri)
     {
@@ -57,7 +58,7 @@ class WebSocketServer
                     string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     Console.WriteLine($"Received message from {context.Request.RemoteEndPoint}, ID: {webSocketId}: {message}");
 
-                    await BroadcastMessageAsync($"Client ID {webSocketId} said: {message}");
+                    await BroadcastMessageAsync(Message);
                 }
             }
         }
