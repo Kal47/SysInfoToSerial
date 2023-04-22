@@ -23,35 +23,44 @@ namespace SysInfoToSerial
         public SysInfoToSerial()
         {
             Monitor.Print();
-            serial = new SerialCom("COM1");
+            serial = new SerialCom("COM4");
         }
-        public void Run()
+        public void Run(bool state)
         {
-            sensors = Monitor.GetData();
+            serial.Pause(state);
+            if (state)
+            {              
 
-            Console.WriteLine($"CPU Used {sensors["Cpu%"]}");
-            byteArr[0] = (byte)sensors["Cpu%"];
+                sensors = Monitor.GetData();
 
-            Console.WriteLine($"CUP Temp {sensors["CpuTemp"]}");
-            byteArr[1] = (byte)sensors["CpuTemp"];
+                Console.WriteLine($"CPU Used {sensors["Cpu%"]}");
+                byteArr[0] = (byte)sensors["Cpu%"];
 
-            Console.WriteLine($"Mem Used {sensors["Mem%"]}");
-            byteArr[2] = (byte)(sensors["Mem%"]);
+                Console.WriteLine($"CUP Temp {sensors["CpuTemp"]}");
+                byteArr[1] = (byte)sensors["CpuTemp"];
 
-            Console.WriteLine($"GPU Used {sensors["Gpu%"]}");
-            byteArr[3] = (byte)sensors["Gpu%"];
+                Console.WriteLine($"Mem Used {sensors["Mem%"]}");
+                byteArr[2] = (byte)(sensors["Mem%"]);
 
-            Console.WriteLine($"GUP Temp {sensors["GpuTemp"]}");
-            byteArr[4] = (byte)sensors["GpuTemp"];
+                Console.WriteLine($"GPU Used {sensors["Gpu%"]}");
+                byteArr[3] = (byte)sensors["Gpu%"];
 
-            Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
-            byteArr[5] = (byte)(sensors["GpuMem"]);
+                Console.WriteLine($"GUP Temp {sensors["GpuTemp"]}");
+                byteArr[4] = (byte)sensors["GpuTemp"];
 
-            byteArr[6] = (byte)('\n');
+                Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
+                byteArr[5] = (byte)(sensors["GpuMem"]);
 
-            Console.WriteLine(BitConverter.ToString(byteArr));
-            //serial.Write(byteArr, 0, byteArr.Length);
-                      
+                byteArr[6] = (byte)('\n');
+
+                for (int i = 0; i < 7; i++)
+                {
+                    byteArr[i] = (byte)(byteArr[i] + 32);
+                }
+
+                Console.WriteLine(BitConverter.ToString(byteArr));
+                serial.Write(byteArr, 0, byteArr.Length);
+            }
         }
     }
 }

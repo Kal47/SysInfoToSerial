@@ -80,9 +80,12 @@ public class HardwareMonitor
             computer.Hardware.First(item => item.HardwareType == HardwareType.Memory).Sensors.First(item => item.Name == "Memory Used").Value ?? -1;
         sensor["Gpu%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Core" && item.SensorType == SensorType.Load).Value ?? -1;
         sensor["GpuTemp"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Core" && item.SensorType == SensorType.Temperature).Value ?? -1;
-        sensor["GpuMem"] = (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Total").Value ?? -1) /
-            (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Used").Value ?? -1);
-           
+        float gpumemtotal = (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Total").Value ?? -1);
+        float gpumemused =  (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Used").Value ?? -1);
+        Console.WriteLine(gpumemtotal);
+        Console.WriteLine(gpumemused);
+        Console.WriteLine(gpumemused / gpumemtotal);
+        sensor["GpuMem"] = (gpumemused / gpumemtotal) * 100;
 
         return sensor;
     }
