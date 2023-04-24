@@ -20,9 +20,7 @@ namespace SysInfoToSerial
         private HardwareMonitor Monitor = new HardwareMonitor();
         private IDictionary<string, float> sensors;
         private WebSocketServer webserv;
-
-
-
+        private string WsMessage;
 
         public SysInfoToSerial()
         {
@@ -35,8 +33,7 @@ namespace SysInfoToSerial
         {
             serial.Pause(state);
             if (state)
-            {
-                webserv.Message = sensors.ToString();
+            {                
                 sensors = Monitor.GetData();
 
                 Console.WriteLine($"CPU Used {sensors["Cpu%"]}");
@@ -63,6 +60,9 @@ namespace SysInfoToSerial
                 {
                     byteArr[i] = (byte)(byteArr[i] + 32);
                 }
+
+                WsMessage = "";
+                webserv.BroadcastMessageAsync(Encoding.UTF8.GetString(byteArr, 0, byteArr.Length));
 
                 Console.WriteLine(BitConverter.ToString(byteArr));
                 serial.Write(byteArr, 0, byteArr.Length);

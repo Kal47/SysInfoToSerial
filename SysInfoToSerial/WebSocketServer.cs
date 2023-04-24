@@ -17,21 +17,28 @@ class WebSocketServer
         listener.Prefixes.Add(uri);
         listener.Start();
         Console.WriteLine($"WebSocket server running at {uri}");
+        Thread notifyThread = new Thread(
 
-        while (true)
+            async delegate ()
         {
-            HttpListenerContext context = await listener.GetContextAsync();
-            if (context.Request.IsWebSocketRequest)
+            while (true)
             {
-                ProcessWebSocketRequestAsync(context);
-            }
-            else
-            {
-                context.Response.StatusCode = 400;
-                context.Response.Close();
+                HttpListenerContext context = await listener.GetContextAsync();
+                if (context.Request.IsWebSocketRequest)
+                {
+                    ProcessWebSocketRequestAsync(context);
+                }
+                else
+                {
+                    context.Response.StatusCode = 400;
+                    context.Response.Close();
+                }
             }
         }
+            );
+        notifyThread.Start();
     }
+
 
     private async Task ProcessWebSocketRequestAsync(HttpListenerContext context)
     {
@@ -58,7 +65,7 @@ class WebSocketServer
                     string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     Console.WriteLine($"Received message from {context.Request.RemoteEndPoint}, ID: {webSocketId}: {message}");
 
-                    await BroadcastMessageAsync(Message);
+                    
                 }
             }
         }
@@ -85,6 +92,7 @@ class WebSocketServer
         foreach (WebSocket webSocket in _webSockets.Values)
         {
             await SendStringAsync(webSocket, message);
+            Console.WriteLine(message);
         }
     }
 
