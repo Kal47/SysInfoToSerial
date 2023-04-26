@@ -11,8 +11,13 @@ namespace SysInfoToSerial
     {
         private NotifyIcon notifyIcon = new NotifyIcon();
         private ToolStripItemCollection StartStop;
-        public bool running = true;
-        private ToolStripDropDown DD = new ToolStripDropDown();
+        private ToolStripMenuItem ComPortDropDown = new ToolStripMenuItem();
+
+        public ViewModel Config { get; set; }
+
+
+        public delegate void MyEventHandler(object sender, EventArgs e);
+
         public UI()
         {
             Thread notifyThread = new Thread(
@@ -25,6 +30,7 @@ namespace SysInfoToSerial
                 notifyIcon.ContextMenuStrip.Items.Add("Start/Stop", null, this.MenuPause_Click);
                 notifyIcon.ContextMenuStrip.Items.Add("Exit", null, this.MenuExit_Click);
                 notifyIcon.Visible = true;
+
                 Application.Run();
             }
         );
@@ -32,8 +38,12 @@ namespace SysInfoToSerial
         }
 
         private void RightClick(object? sender, MouseEventArgs e)
-        {
-            
+        {       
+            ComPortDropDown = new ToolStripMenuItem();
+            foreach (String port in Config.AvalableSerialPorts)
+            {
+                ComPortDropDown.DropDownItems.Add(port, null, (sender, e) => { Config.ActiveSerialPort = port; });
+            }
         }
 
         private void MenuExit_Click(object sender, EventArgs e)
@@ -43,8 +53,8 @@ namespace SysInfoToSerial
 
         private void MenuPause_Click(object sender, EventArgs e)
         {
-            running = !running;
-            if (running)
+            Config.RunSerialPort = !Config.RunSerialPort;
+            if (Config.RunSerialPort)
                 notifyIcon.Icon = new Icon("on.ico");
             else
                 notifyIcon.Icon = new Icon("off.ico");

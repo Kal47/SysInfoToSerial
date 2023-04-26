@@ -10,9 +10,17 @@ namespace SysInfoToSerial
         private readonly SerialPort port;
         
         public SerialCom (string portName)
-        {            
+        {
             port = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One);
             port.Open();
+        }
+
+        public bool ChangePort(string portName)
+        {
+            port.Close();
+            port.PortName = portName;
+            port.Open();
+            return port.IsOpen;
         }
 
         public void Write(string msg)
@@ -40,7 +48,10 @@ namespace SysInfoToSerial
             }
         }
 
-
+        List<String> GetPorts()
+        {
+            return SerialPort.GetPortNames().ToList();
+        }
         ~SerialCom()
         {
             port.Close();

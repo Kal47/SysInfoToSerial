@@ -10,15 +10,13 @@ namespace SysInfoToSerial
         static void Main(string[] args)
         {
             Console.WriteLine("Start");
-            SysInfoToSerial program = new SysInfoToSerial();
-            UI uI = new UI();
+            SysInfoToSerial program = new SysInfoToSerial();            
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
-            
-            while (true)
-            {
-                program.Run(uI.running);
+            UI uI = new UI();
+
+                program.Run(uI.Config);
                 Thread.Sleep(2000);
-            }
+
         }
     }
 }

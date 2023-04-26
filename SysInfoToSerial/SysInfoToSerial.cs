@@ -7,6 +7,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO.Ports;
+using System.Timers;
 
 namespace SysInfoToSerial
 {
@@ -20,52 +21,73 @@ namespace SysInfoToSerial
         private HardwareMonitor Monitor = new HardwareMonitor();
         private IDictionary<string, float> sensors;
         private WebSocketServer webserv;
-        private string WsMessage;
+        private ViewModel Config;
+        private System.Timers.Timer t = new System.Timers.Timer();
 
-        public SysInfoToSerial()
+        public SysInfoToSerial(ViewModel _config)
         {
+            Config = _config;
             Monitor.Print();
             serial = new SerialCom("COM4");         
             webserv = new WebSocketServer();
             webserv.RunServerAsync("http://localhost:8080/").Wait();
         }
-        public void Run(bool state)
+        public void Run(ViewModel _config)
         {
-            serial.Pause(state);
-            if (state)
-            {                
-                sensors = Monitor.GetData();
 
-                Console.WriteLine($"CPU Used {sensors["Cpu%"]}");
-                byteArr[0] = (byte)sensors["Cpu%"];
+            System.Timers.Timer t = new System.Timers.Timer();
+            t.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            t.Interval = 2000;
+            t.Enabled = true;
+            Config = _config;
 
-                Console.WriteLine($"CUP Temp {sensors["CpuTemp"]}");
-                byteArr[1] = (byte)sensors["CpuTemp"];
+            while (true)
+            {
 
-                Console.WriteLine($"Mem Used {sensors["Mem%"]}");
-                byteArr[2] = (byte)(sensors["Mem%"]);
+            }
+        }
+        private static void OnTimedEvent(object source, ElapsedEventArgs e)
+        {      
 
-                Console.WriteLine($"GPU Used {sensors["Gpu%"]}");
-                byteArr[3] = (byte)sensors["Gpu%"];
-
-                Console.WriteLine($"GUP Temp {sensors["GpuTemp"]}");
-                byteArr[4] = (byte)sensors["GpuTemp"];
-
-                Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
-                byteArr[5] = (byte)(sensors["GpuMem"]);
-
-                byteArr[6] = (byte)('\n');
-
-                for (int i = 0; i < 7; i++)
+                 
+                if (Config.RunSerialPort || Config.RunWebSocketServer)
                 {
-                    byteArr[i] = (byte)(byteArr[i] + 32);
-                }
+                    sensors = Monitor.GetData();
 
-                WsMessage = "";
-                webserv.BroadcastMessageAsync(Encoding.UTF8.GetString(byteArr, 0, byteArr.Length));
+                    Console.WriteLine($"CPU Used {sensors["Cpu%"]}");
+                    byteArr[0] = (byte)sensors["Cpu%"];
 
-                Console.WriteLine(BitConverter.ToString(byteArr));
-                serial.Write(byteArr, 0, byteArr.Length);
+                    Console.WriteLine($"CUP Temp {sensors["CpuTemp"]}");
+                    byteArr[1] = (byte)sensors["CpuTemp"];
+
+                    Console.WriteLine($"Mem Used {sensors["Mem%"]}");
+                    byteArr[2] = (byte)(sensors["Mem%"]);
+
+                    Console.WriteLine($"GPU Used {sensors["Gpu%"]}");
+                    byteArr[3] = (byte)sensors["Gpu%"];
+
+                    Console.WriteLine($"GUP Temp {sensors["GpuTemp"]}");
+                    byteArr[4] = (byte)sensors["GpuTemp"];
+
+                    Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
+                    byteArr[5] = (byte)(sensors["GpuMem"]);
+
+                    byteArr[6] = (byte)('\n');
+
+                    for (int i = 0; i < 7; i++)
+                    {
+                        byteArr[i] = (byte)(byteArr[i] + 32);
+                    }                    
+                    
+                    if(Config.RunWebSocketServer)
+                        webserv.BroadcastMessageAsync(Encoding.UTF8.GetString(byteArr, 0, byteArr.Length));
+
+                    Console.WriteLine(BitConverter.ToString(byteArr));
+
+                    serial.Pause(Config.RunSerialPort);
+                    if (Config.RunSerialPort)
+                        serial.Write(byteArr, 0, byteArr.Length);
+
             }
         }
     }
