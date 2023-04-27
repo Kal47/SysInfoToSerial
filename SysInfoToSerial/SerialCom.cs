@@ -4,11 +4,12 @@ using System.IO.Ports;
 
 namespace SysInfoToSerial
 {
-    public class SerialCom
+    public class SerialCom : IDisposable
     {
         // Create the serial port with basic settings
-        private readonly SerialPort port;
-        
+        private SerialPort port;
+        private bool disposedValue;
+
         public SerialCom (string portName)
         {
             port = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One);
@@ -17,9 +18,14 @@ namespace SysInfoToSerial
 
         public bool ChangePort(string portName)
         {
-            port.Close();
-            port.PortName = portName;
-            port.Open();
+            if (port.PortName != portName)
+            { 
+                port.Close();
+                port.PortName = portName;
+                try {
+                    port.Open();
+                } catch { }
+            }
             return port.IsOpen;
         }
 
@@ -48,13 +54,43 @@ namespace SysInfoToSerial
             }
         }
 
-        List<String> GetPorts()
+        public bool isOpen()
+        {
+            return port.IsOpen;
+        }
+
+        public List<String> GetPorts()
         {
             return SerialPort.GetPortNames().ToList();
         }
-        ~SerialCom()
+
+        protected virtual void Dispose(bool disposing)
         {
-            port.Close();
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    port.Close();
+                }
+                
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~SerialCom()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

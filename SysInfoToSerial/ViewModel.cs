@@ -11,6 +11,7 @@ namespace SysInfoToSerial
         public string ActiveSerialPort;
         public bool RunWebSocketServer;
         public bool RunSerialPort;
+        public bool SerialPortOpen;
         public List<string> AvalableSerialPorts = new List<string>();
     }
 }

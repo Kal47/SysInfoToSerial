@@ -21,9 +21,10 @@ public class UpdateVisitor : IVisitor
 }
 
 
-public class HardwareMonitor
+public class HardwareMonitor : IDisposable
 {
     private readonly Computer computer;
+    private bool disposedValue;
 
     public HardwareMonitor(bool isCpuEnabled = true,
         bool isGpuEnabled = true,
@@ -82,15 +83,40 @@ public class HardwareMonitor
         sensor["GpuTemp"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Core" && item.SensorType == SensorType.Temperature).Value ?? -1;
         float gpumemtotal = (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Total").Value ?? -1);
         float gpumemused =  (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Used").Value ?? -1);
-        Console.WriteLine(gpumemtotal);
-        Console.WriteLine(gpumemused);
-        Console.WriteLine(gpumemused / gpumemtotal);
+        //Console.WriteLine(gpumemtotal);
+        //Console.WriteLine(gpumemused);
+        //Console.WriteLine(gpumemused / gpumemtotal);
         sensor["GpuMem"] = (gpumemused / gpumemtotal) * 100;
         
         return sensor;
     }
-    ~HardwareMonitor()
+
+    protected virtual void Dispose(bool disposing)
     {
-        computer.Close();
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                computer.Close();
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            disposedValue = true;
+        }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~HardwareMonitor()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

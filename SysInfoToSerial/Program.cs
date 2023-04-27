@@ -16,7 +16,6 @@ namespace SysInfoToSerial
 
                 program.Run(uI.Config);
                 Thread.Sleep(2000);
-
         }
     }
 }
