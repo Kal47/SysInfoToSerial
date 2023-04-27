@@ -21,6 +21,9 @@ Note: This uses one I2C bus, you will need two displays with diffrent adresses
 
 Uses the U8g2lib display library
 
-![Alt Text](https://github.com/Kal47/SysInfoToSerial/tree/main/SysInfoToSerialArduino/Wireing.JPG))
+A3 to SDL
+A4 to SDA
+
+![Alt Text](https://raw.githubusercontent.com/Kal47/SysInfoToSerial/main/SysInfoToSerialArduino/Wireing.JPG))
 
 
