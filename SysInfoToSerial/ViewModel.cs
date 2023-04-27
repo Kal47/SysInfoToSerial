@@ -8,7 +8,7 @@ namespace SysInfoToSerial
 {
     internal class ViewModel
     {
-        public string ActiveSerialPort;
+        public string ActiveSerialPort = "";
         public bool RunWebSocketServer;
         public bool RunSerialPort;
         public bool SerialPortOpen;

@@ -24,8 +24,7 @@ namespace SysInfoToSerial
         public UI()
         {
             Config = new ViewModel()
-            {
-                ActiveSerialPort = "COM4",
+            {                
                 RunSerialPort = true,
                 RunWebSocketServer = true
             };

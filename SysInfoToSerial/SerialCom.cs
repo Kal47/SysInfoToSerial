@@ -10,15 +10,21 @@ namespace SysInfoToSerial
         private SerialPort port;
         private bool disposedValue;
 
-        public SerialCom (string portName)
+        public SerialCom ()
         {
-            port = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One);
-            port.Open();
+            port = new SerialPort("COM1", 9600, Parity.None, 8, StopBits.One);
+            try
+            {
+                port.PortName = GetPorts()[0];
+                port.Open();
+
+            }
+            catch { }
         }
 
         public bool ChangePort(string portName)
-        {
-            if (port.PortName != portName)
+        {         
+            if (port.PortName != portName && portName.Contains("COM"))
             { 
                 port.Close();
                 port.PortName = portName;
@@ -34,10 +40,15 @@ namespace SysInfoToSerial
             port.Write(msg);
         }
 
-        public void Write(byte[] byteArr, int offset, int count)
+        public bool Write(byte[] byteArr, int offset, int count)
         {
-
-            port.Write(byteArr, offset, count);
+            bool sucsess = true;
+            try
+            {
+                port.Write(byteArr, offset, count);
+            }
+            catch { sucsess = false; }
+            return sucsess;
         }
 
         public void Pause(bool state)
@@ -45,12 +56,12 @@ namespace SysInfoToSerial
             if (state)
             {
                 if (!port.IsOpen)
-                    port.Open();
+                    try { port.Open(); } catch { }               
             }
             else
             {
                 if (port.IsOpen)
-                    port.Close();
+                    try { port.Close(); } catch { }
             }
         }
 

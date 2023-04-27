@@ -11,11 +11,8 @@ namespace SysInfoToSerial
         {
             Console.WriteLine("Start");
             SysInfoToSerial program = new SysInfoToSerial();            
-            var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
             UI uI = new UI();
-
-                program.Run(uI.Config);
-                Thread.Sleep(2000);
+            program.Run(uI.Config);
         }
     }
 }

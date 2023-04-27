@@ -27,7 +27,7 @@ namespace SysInfoToSerial
         public SysInfoToSerial()
         {
             Monitor.Print();
-            serial = new SerialCom("COM4");         
+            serial = new SerialCom();
             webserv = new WebSocketServer();
             webserv.RunServerAsync("http://localhost:8080/").Wait();
         }

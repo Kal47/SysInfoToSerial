@@ -1,28 +1,26 @@
 # System Info To Serial
 > This aplication uses LibreHardwareMonitor to collect information about your system and sends it over a serial port.
-> An Arduino Nano on the other end receves the data and displays it on a SSD1306 OLED display.
+> An Arduino Nano or compatable board receves the data and displays it on a SSD1306 OLED display.
+> Also includes a WebSocketServer for remote monitoring at port 8080
 
 ## Usage example
 
-The application needs administrator privlages to get the hardware info
+The application needs administrator privlages to get the hardware info from LibreHardwareMonitor
 
-It will create a icon on you notificaion area of your task bar.
+It will create a icon on you notificaion area of your task bar
+    Controls include
+        Turning on and off the Serial Port Connection
+        Choosing the Port
+        Turning on and off the Web Socket Server
 
 ## Arduino Setup
 
-(Yet to de documented)
+Note: This uses one I2C bus, you will need two displays with diffrent adresses
+    The ones found had a surface mount resister that could be moved to change the adress
 
 
-## Release History Windows App
-* 0.2 (Soon)
-    * Added error handeling and selection of COM port
-* 0.2 (Soon)
-    * Kept Console window from opening
-* 0.1
-    * Work in progress
+Uses the U8g2lib display library
 
-## Release History Windows Auduino Code 
-* 0.1
-    * Work in progress
+![Alt Text](https://github.com/Kal47/SysInfoToSerial/tree/main/SysInfoToSerialArduino/Wireing.JPG))
 
 
