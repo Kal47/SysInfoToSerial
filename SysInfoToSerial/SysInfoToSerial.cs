@@ -17,7 +17,7 @@ namespace SysInfoToSerial
     class SysInfoToSerial
     {
         private SerialCom serial;    
-        private byte[] byteArr = new byte[7];
+        private byte[] byteArr = new byte[9];
         private HardwareMonitor Monitor = new HardwareMonitor();
         private IDictionary<string, float> sensors;
         private WebSocketServer webserv;
@@ -54,24 +54,28 @@ namespace SysInfoToSerial
                 //Console.WriteLine($"CPU Used {sensors["Cpu%"]}");
                 byteArr[0] = (byte)sensors["Cpu%"];
 
+                byteArr[1] = (byte)(sensors["CpuFeq"] / 100);
+
                 //Console.WriteLine($"CUP Temp {sensors["CpuTemp"]}");
-                byteArr[1] = (byte)sensors["CpuTemp"];
+                byteArr[2] = (byte)sensors["CpuTemp"];
 
                 //Console.WriteLine($"Mem Used {sensors["Mem%"]}");
-                byteArr[2] = (byte)(sensors["Mem%"]);
+                byteArr[3] = (byte)(sensors["Mem%"]);
 
                 //Console.WriteLine($"GPU Used {sensors["Gpu%"]}");
-                byteArr[3] = (byte)sensors["Gpu%"];
+                byteArr[4] = (byte)sensors["Gpu%"];
+
+                byteArr[5] = (byte)(sensors["GpuFeq"] / 100);
 
                 //Console.WriteLine($"GUP Temp {sensors["GpuTemp"]}");
-                byteArr[4] = (byte)sensors["GpuTemp"];
+                byteArr[6] = (byte)sensors["GpuTemp"];
 
                 //Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
-                byteArr[5] = (byte)(sensors["GpuMem"]);
+                byteArr[7] = (byte)(sensors["GpuMem"]);
 
-                byteArr[6] = (byte)('\n');
+                byteArr[8] = 0;
 
-                for (int i = 0; i < 7; i++)
+                for (int i = 0; i < 8; i++) //deliberate under run to keep last bit 0
                 {
                     byteArr[i] = (byte)(byteArr[i] + 32);
                 }                    
@@ -79,7 +83,7 @@ namespace SysInfoToSerial
                 if(Config.RunWebSocketServer)
                     webserv.BroadcastMessageAsync(Encoding.UTF8.GetString(byteArr, 0, byteArr.Length));
 
-                //Console.WriteLine(BitConverter.ToString(byteArr));
+                Console.WriteLine(BitConverter.ToString(byteArr));
 
                 serial.Pause(Config.RunSerialPort);
                 serial.ChangePort(Config.ActiveSerialPort);

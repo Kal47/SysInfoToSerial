@@ -76,10 +76,12 @@ public class HardwareMonitor : IDisposable
         Dictionary<string, float> sensor = new Dictionary<string, float>();
 
         sensor["Cpu%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.Name == "CPU Total").Value ?? -1;
+        sensor["CpuFeq"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.SensorType == SensorType.Clock).Value ?? -1;
         sensor["CpuTemp"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.Name == "Package").Value ?? -1;
         sensor["Mem%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Memory).Sensors.First(item => item.Name == "Memory").Value ?? -1 /
-            computer.Hardware.First(item => item.HardwareType == HardwareType.Memory).Sensors.First(item => item.Name == "Memory Used").Value ?? -1;
+        computer.Hardware.First(item => item.HardwareType == HardwareType.Memory).Sensors.First(item => item.Name == "Memory Used").Value ?? -1;
         sensor["Gpu%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Core" && item.SensorType == SensorType.Load).Value ?? -1;
+        sensor["GpuFeq"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.SensorType == SensorType.Clock).Value ?? -1;
         sensor["GpuTemp"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Core" && item.SensorType == SensorType.Temperature).Value ?? -1;
         float gpumemtotal = (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Total").Value ?? -1);
         float gpumemused =  (computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Memory Used").Value ?? -1);

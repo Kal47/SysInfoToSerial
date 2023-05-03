@@ -101,4 +101,12 @@ class WebSocketServer
         byte[] buffer = Encoding.UTF8.GetBytes(message);
         await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
     }
+
+    public  void EndWebServer()
+    {
+        foreach (WebSocket webSocket in _webSockets.Values)
+        {
+            webSocket.Abort();
+        }
+    }
 }
