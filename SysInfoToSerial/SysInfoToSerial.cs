@@ -73,7 +73,7 @@ namespace SysInfoToSerial
                 //Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
                 byteArr[7] = (byte)(sensors["GpuMem"]);
 
-                byteArr[8] = -1; //set to -1 so it changes to 0 in the for loop below. Probably not the best way to do that
+                byteArr[8] = 255; //set to -1 so it changes to 0 in the for loop below. Probably not the best way to do that
 
                 for (int i = 0; i < 8; i++)
                 {

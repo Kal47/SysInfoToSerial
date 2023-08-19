@@ -77,7 +77,7 @@ public class HardwareMonitor : IDisposable
 
         sensor["Cpu%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.Name == "CPU Total").Value ?? -1;
         sensor["CpuFeq"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.SensorType == SensorType.Clock).Value ?? -1;
-        sensor["CpuTemp"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.SensorType == SensorType.Temperature && item.Name == "CPU Package").Value ?? -1;
+        sensor["CpuTemp"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Cpu).Sensors.First(item => item.SensorType == SensorType.Temperature).Value ?? -1;
         sensor["Mem%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.Memory).Sensors.First(item => item.Name == "Memory").Value ?? -1 /
         computer.Hardware.First(item => item.HardwareType == HardwareType.Memory).Sensors.First(item => item.Name == "Memory Used").Value ?? -1;
         sensor["Gpu%"] = computer.Hardware.First(item => item.HardwareType == HardwareType.GpuNvidia).Sensors.First(item => item.Name == "GPU Core" && item.SensorType == SensorType.Load).Value ?? -1;
