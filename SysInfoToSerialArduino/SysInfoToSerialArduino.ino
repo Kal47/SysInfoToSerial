@@ -23,12 +23,9 @@ void setup() {
 void loop() {
   
   if (stringComplete) {
-    inputStringIndex = 0;
     stringComplete = false;
-    drawOLED_1();
+    drawOLED_1(); //ran in seperate functions because we dont have enough ram!
     drawOLED_2();
-
-
   }
 }
 
@@ -39,14 +36,14 @@ void drawOLED_1(void) {
   sprintf(buffer, "CPU: %d", inputString[0]);
   OLED_1.drawStr(0, 13, buffer);
 
-  sprintf(buffer, "TMP: %d", inputString[2]);
-  OLED_1.drawStr(0, 46, buffer);
-
   char strBuffer[4];
   float float_value = inputString[1];
   dtostrf(float_value / 10, 3, 1, strBuffer);
   sprintf(buffer, "CLK: %s", strBuffer);
   OLED_1.drawStr(0, 30, buffer);
+
+  sprintf(buffer, "TMP: %d", inputString[2]);
+  OLED_1.drawStr(0, 46, buffer);
 
   sprintf(buffer, "MEM: %d", inputString[3]);
   OLED_1.drawStr(0, 64, buffer);
@@ -59,34 +56,41 @@ void drawOLED_2(void) {
   OLED_2.clearBuffer();  // clear the internal memory
 
   sprintf(buffer, "GPU: %d", inputString[4]);
-  OLED_1.drawStr(0, 13, buffer);
+  OLED_2.drawStr(0, 13, buffer);
 
-  sprintf(buffer, "TMP: %d", inputString[6]);
-  OLED_1.drawStr(0, 46, buffer);
-  
   char strBuffer[4];
   float float_value = inputString[5];
   dtostrf(float_value / 10, 3, 1, strBuffer);
   sprintf(buffer, "CLK: %s", strBuffer);
-  OLED_1.drawStr(0, 30, buffer);
+  OLED_2.drawStr(0, 30, buffer);
 
+  sprintf(buffer, "TMP: %d", inputString[6]);
+  OLED_2.drawStr(0, 46, buffer);
+  
   sprintf(buffer, "MEM: %d", inputString[7]);
-  OLED_1.drawStr(0, 64, buffer);
+  OLED_2.drawStr(0, 64, buffer);
+  
   OLED_2.sendBuffer();  // transfer internal memory to the display
 }
 
 void serialEvent() {
-  while (Serial.available()) {
-    // get the new byte:
-    byte inChar = Serial.read();
-    // add it to the inputString:
-    inputString[inputStringIndex] = inChar - 32;
-    // if the incoming character is a newline, set a flag so the main loop can
-    // do something about it:
-    if (inChar == 0) {
-      stringComplete = true;
-    }
+  while (Serial.available()) { //probobly should set this to a fixed length
+
+    byte inChar = Serial.read() - 1; //removes the added one that was there to keep any 0 value from ending the read loop
+    
+    inputString[inputStringIndex] = inChar;
     inputStringIndex++;
-  }  
-  Serial.println(inputString);
+    
+    if (inChar == 0) {
+      stringComplete = true; //flag screens to print
+      
+      Serial.flush(); //clean any extra crap from buffer
+      Serial.println("---");
+      for (int i = 0; i > inputStringIndex; i++ )
+        Serial.println(inputString, DEC); //send back what we got for debug      
+      inputStringIndex = 0;
+      //return //I dont think we need this because of the serial flush
+
+    }    
+  }
 }
