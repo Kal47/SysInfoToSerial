@@ -42,7 +42,7 @@ namespace SysInfoToSerial
 
             while (true)
             {
-
+                
             }
         }
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -73,11 +73,11 @@ namespace SysInfoToSerial
                 //Console.WriteLine($"GPU Mem {sensors["GpuMem"]}");
                 byteArr[7] = (byte)(sensors["GpuMem"]);
 
-                byteArr[8] = 0;
+                byteArr[8] = 255; //set to -1 so it changes to 0 in the for loop below. Probably not the best way to do that
 
-                for (int i = 0; i < 8; i++) //deliberate under run to keep last bit 0
+                for (int i = 0; i < 8; i++)
                 {
-                    byteArr[i] = (byte)(byteArr[i] + 32);
+                    byteArr[i] = (byte)(byteArr[i] + 1); //adds one to the byte so 0 values dont end the read loop on arduino
                 }                    
                     
                 if(Config.RunWebSocketServer)
