@@ -87,7 +87,7 @@ namespace SysInfoToSerial
 
                 serial.Pause(Config.RunSerialPort);
                 serial.ChangePort(Config.ActiveSerialPort);
-                if (Config.RunSerialPort)
+                if (Config.RunSerialPort && serial.isOpen())
                     serial.Write(byteArr, 0, byteArr.Length);
             }
 
